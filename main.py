@@ -45,7 +45,8 @@ def construct_mail(care_rows, today):
     
   return subject, body
 
-def send_mails():
+def send_mails(subject, body, sender, recipients):
+  send_email('Testing Birthday Notifier', 'An app that scans boys birthdates everyday and notifies el khodam if today if someone\'s birthday!', sender, recipients)
   if not care_rows.empty:  # send emails to 5odam!
       print("People with birthdays today:")
       print(care_rows['name'].tolist())
@@ -72,5 +73,7 @@ data = pd.read_csv(f'https://docs.google.com/spreadsheets/d/{sheet_id}/export?fo
 care_rows, today = select_rows(data)
 subject, body = construct_mail(care_rows, today)
 
-send_mails()
+send_mails('Testing Birthday Notifier', 'An app that scans boys birthdates everyday and notifies el khodam if today if someone\'s birthday!', sender, recipients)
+# send_mails(subject, body, sender, recipients)
+
 print(f"mail sent successfully to {recipients}!")
