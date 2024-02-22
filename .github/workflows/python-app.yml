@@ -1,13 +1,9 @@
 name: Birthday Reminder
 
 on:
-  push:
-    branches:
-      - main
   schedule:
-    - cron: 13 17 * * *  # runs once every day (at 7:00 AM in Egypt Time Zone)
-    - cron: 18 17 * * *
-    - cron: 23 17 * * *
+    - cron: */15 * * * *
+    # - cron: 13 17 * * *  # runs once every day (at 7:00 AM in Egypt Time Zone)
 
 jobs:
   send_birthday_email:
