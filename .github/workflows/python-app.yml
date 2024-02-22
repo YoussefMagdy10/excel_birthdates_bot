@@ -1,10 +1,12 @@
 name: Birthday Reminder
 
 on:
+  push:
+    branches:
+      - main
   schedule:
-    - cron: 48 16 * * *  # runs once every day (at 7:00 AM in Egypt Time Zone)
-    - cron: 52 15 * * *  # runs once every day (at 7:00 AM in Egypt Time Zone)
-    - cron: 55 15 * * *  # runs once every day (at 7:00 AM in Egypt Time Zone)
+    - cron: 53 15 * * *  # runs once every day (at 7:00 AM in Egypt Time Zone)
+    - cron: 56 15 * * *  # runs once every day (at 7:00 AM in Egypt Time Zone)
     - cron: 59 15 * * *  # runs once every day (at 7:00 AM in Egypt Time Zone)
 
 jobs:
@@ -30,4 +32,3 @@ jobs:
 
     - name: Run Script
       run: python main.py
-      
