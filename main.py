@@ -61,10 +61,11 @@ except KeyError:
    sender_pass = "TOKEN NOT AVAILABLE!"
 
 # CONSTANTS:
-sheet_id = '13CfJ3N8BxS-skB_cMmrSc3A_PbdHO-nA'
+sheet_id = '1xO3JveyoACkecDP7dfs5Sk3FoKFCy64W'
 sender = 'abomakar.maximos.domadios@gmail.com'
 password = sender_pass
-recipients = [sender, 'youssefmagdi1210@gmail.com']
+recipients = [sender, 'georgemrafla@gmail.com', 'youssefmagdi1210@gmail.com', 'michaelashraf1234@gmail.com', 
+              'pierregorgy@gmail.com', 'Anthony.IMEOR@gmail.com', 'Andrewwadie2000@gmail.com']
 
 # Storing Excel into df
 data = pd.read_csv(f'https://docs.google.com/spreadsheets/d/{sheet_id}/export?format=csv')
