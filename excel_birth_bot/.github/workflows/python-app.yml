@@ -5,7 +5,11 @@ name: Birthday Reminder
 
 on:
   schedule:
-    - cron: 3 15 * * *  # runs once every day (at 7:00 AM in Egypt Time Zone)
+    - cron: 25 15 * * *  # runs once every day (at 7:00 AM in Egypt Time Zone)
+    - cron: 30 15 * * *  # runs once every day (at 7:00 AM in Egypt Time Zone)
+    - cron: 35 15 * * *  # runs once every day (at 7:00 AM in Egypt Time Zone)
+    - cron: 40 15 * * *  # runs once every day (at 7:00 AM in Egypt Time Zone)
+
 
 # permissions:
 #   contents: read
@@ -16,9 +20,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
-      SENDER_PASSWORD: ${{ secrets.SENDER_PASSWORD }}
-      RECIPIENTS_EMAILS: ${{ secrets.RECIPIENTS_EMAILS }}
+      SENDER_PASS: ${{ secrets.SENDER_PASS }}
 
     steps:
     - name: Checkout Repository
