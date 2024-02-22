@@ -5,9 +5,9 @@ on:
     branches:
       - main
   schedule:
-    - cron: 8 16 * * *  # runs once every day (at 7:00 AM in Egypt Time Zone)
-    - cron: 12 16 * * *
-    - cron: 15 16 * * *
+    - cron: 13 17 * * *  # runs once every day (at 7:00 AM in Egypt Time Zone)
+    - cron: 18 17 * * *
+    - cron: 23 17 * * *
 
 jobs:
   send_birthday_email:
