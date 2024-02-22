@@ -72,3 +72,4 @@ care_rows, today = select_rows(data)
 subject, body = construct_mail(care_rows, today)
 
 send_mails()
+print("mail sent successfully!")
