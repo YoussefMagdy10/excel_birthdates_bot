@@ -5,7 +5,7 @@ name: Birthday Reminder
 
 on:
   schedule:
-    - cron: 59 2 * * *  # runs once every day (at 7:00 AM in Egypt Time Zone)
+    - cron: 3 15 * * *  # runs once every day (at 7:00 AM in Egypt Time Zone)
 
 # permissions:
 #   contents: read
