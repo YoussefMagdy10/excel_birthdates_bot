@@ -2,7 +2,7 @@ name: Birthday Reminder
 
 on:
   schedule:
-    - cron: */15 * * * *
+    - cron: '*/15 * * * *'
     # - cron: 13 17 * * *  # runs once every day (at 7:00 AM in Egypt Time Zone)
 
 jobs:
