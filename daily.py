@@ -2,8 +2,9 @@ import pandas as pd
 from datetime import datetime
 import smtplib
 from email.mime.text import MIMEText
-from datetime import datetime, timedelta
+from datetime import datetime
 from config import sender_email, sender_password, recipient_emails
+import os
 
 def send_email(subject, body, sender, password, recipients): # to be exported
     msg = MIMEText(body)
