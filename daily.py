@@ -25,7 +25,8 @@ def data_handler(data):
 
 def select_rows(data): # specific to daily.py code
   today = datetime.now().date()
-  return data[(data['birthdate'].dt.day == today.day) & (data['birthdate'].dt.month == today.month)], today
+  selected_rows = data[(data['birthdate'].dt.day == today.day) & (data['birthdate'].dt.month == today.month)]
+  return selected_rows if not selected_rows.empty else pd.DataFrame(columns=data.columns), today
 
 def construct_mail(care_rows, today): # specific to daily.py code
   subject = f'أعياد ميلاد {today}'
