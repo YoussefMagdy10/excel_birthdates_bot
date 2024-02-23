@@ -1,9 +1,9 @@
 name: Birthday Daily Reminder (Osra)
 
 on:
-  push:
-    branches:
-      - main
+  # push:
+  #   branches:
+  #     - main
   schedule:
     - cron: 0 5 * * *  # runs once every day (at 7:00 AM in Egypt Time Zone)
 
