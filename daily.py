@@ -3,9 +3,9 @@ from datetime import datetime
 import smtplib
 from email.mime.text import MIMEText
 from datetime import datetime, timedelta
-import os
+from config import sender_email, sender_password, recipient_emails
 
-def send_email(subject, body, sender, recipients):
+def send_email(subject, body, sender, password, recipients): # to be exported
     msg = MIMEText(body)
     msg['Subject'] = subject
     msg['From'] = sender
@@ -15,17 +15,18 @@ def send_email(subject, body, sender, recipients):
         smtp_server.login(sender, password)
         smtp_server.sendmail(sender, recipients, msg.as_string())
 
-def select_rows(data):
-  data = data.rename(columns={'الإسم': 'name', 'تاريخ الميلاد': 'birthdate', 'رقم الولد': 'boy_number', 
-                              'رقم الأم': 'mom_number', 'رقم الأب': 'dad_number'})
-  data = data[['name', 'birthdate', 'boy_number', 'mom_number', 'dad_number']]
-  data['birthdate'] = pd.to_datetime(data['birthdate'], format='%d/%m/%Y')
+def data_handler(data):
+    data = data.rename(columns={'الإسم': 'name', 'تاريخ الميلاد': 'birthdate', 'رقم الولد': 'boy_number', 
+                                'رقم الأم': 'mom_number', 'رقم الأب': 'dad_number'})
+    data = data[['name', 'birthdate', 'boy_number', 'mom_number', 'dad_number']]
+    data['birthdate'] = pd.to_datetime(data['birthdate'], format='%d/%m/%Y')
 
+
+def select_rows(data): # specific to daily.py code
   today = datetime.now().date()
-  
   return data[(data['birthdate'].dt.day == today.day) & (data['birthdate'].dt.month == today.month)], today
 
-def construct_mail(care_rows, today):
+def construct_mail(care_rows, today): # specific to daily.py code
   subject = f'أعياد ميلاد {today}'
 
   body = f'Today is the birthday of:\n\n'
@@ -45,33 +46,30 @@ def construct_mail(care_rows, today):
     
   return subject, body
 
-def send_mails(subject, body, sender, recipients):
+def send_mails(subject, body, sender, password, recipients, care_rows): # to be exported
   if not care_rows.empty:  # send emails to 5odam!
       print("People with birthdays today:")
       print(care_rows['name'].tolist())
       print(f"body: {body}")
-      send_email(subject, body, sender, recipients)
+      send_email(subject, body, sender, password, recipients)
       print(f"email sent successfully to {recipients[1]}")
   else:
       print("No birthdays today.")
 
-try:
-   sender_pass = os.environ["SENDER_PASS"]
-except KeyError:
-   sender_pass = "TOKEN NOT AVAILABLE!"
+
 
 # CONSTANTS:
 sheet_id = '1xO3JveyoACkecDP7dfs5Sk3FoKFCy64W'
-sender = 'abomakar.maximos.domadios@gmail.com'
-password = sender_pass
-recipients = [sender, 'georgemrafla@gmail.com', 'youssefmagdi1210@gmail.com', 'michaelashraf1234@gmail.com', 
-              'pierregorgy@gmail.com', 'Anthony.IMEOR@gmail.com', 'Andrewwadie2000@gmail.com']
+sender = sender_email
+password = sender_password
+recipients = recipient_emails
 
 # Storing Excel into df
 data = pd.read_csv(f'https://docs.google.com/spreadsheets/d/{sheet_id}/export?format=csv')
+data = data_handler(data)
 care_rows, today = select_rows(data)
 subject, body = construct_mail(care_rows, today)
 
-send_mails(subject, body, sender, recipients)
+send_mails(subject, body, sender, password, recipients, care_rows)
 
 print(f"mail sent successfully to {recipients}!")
