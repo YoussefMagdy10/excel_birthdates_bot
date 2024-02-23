@@ -1,4 +1,5 @@
 # /your_package/config.py
+import os
 
 def get_password(environ_string):
   try:
