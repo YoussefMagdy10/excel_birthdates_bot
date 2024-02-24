@@ -1,0 +1,32 @@
+name: Birthday Daily Reminder (Osra)
+
+on:
+  # push:
+  #   branches:
+  #     - main
+  schedule:
+    - cron: 1 5 1 * *  # runs once at the beginning of each month (at 2:00 AM in Cairo Time Zone)
+
+jobs:
+  send_birthday_email:
+    runs-on: ubuntu-latest
+
+    env:
+      SENDER_PASS: ${{ secrets.SENDER_PASS }}
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt  # Add any additional dependencies here
+
+    - name: Run Script
+      run: python monthly.py
