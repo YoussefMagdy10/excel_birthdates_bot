@@ -72,15 +72,14 @@ def construct_mail_last(care_rows, today):
 
 def construct_mail_next(care_rows, today):
     subject = f'أعياد ميلاد الأسبوع القادم - ما بين: {today} & {today + timedelta(days=7)}'
-    
-    body = "Last week was the birthday of:\n"
+
+    body = "This week is the birthday of:\n"
     for name in care_rows['name']:
         row = care_rows.loc[care_rows['name'] == name].squeeze() # attributes: name, birthdate, boy_number, mom_number, dad_number
-        date = row.birthdate
+        date = row.birthdate.strftime('%Y-%m-%d')
         body += f"{str(date)} --> {name}\n"
 
     return subject, body
-
 
 
 # CONSTANTS:
