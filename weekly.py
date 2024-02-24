@@ -31,7 +31,7 @@ def data_handler(data):
                                 'رقم الأم': 'mom_number', 'رقم الأب': 'dad_number'})
     data = data[['name', 'birthdate', 'boy_number', 'mom_number', 'dad_number']]
     data['birthdate'] = pd.to_datetime(data['birthdate'], format='%d/%m/%Y')
-
+    return data
 
 # def select_rows_last(data): # --> Needs logic revision
 #     today = datetime.now().date()
