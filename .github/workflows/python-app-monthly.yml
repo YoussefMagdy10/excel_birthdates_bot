@@ -1,9 +1,9 @@
-name: Birthday Daily Reminder (Osra)
+name: Birthday Monthly Reminder (Osra)
 
 on:
-  # push:
-  #   branches:
-  #     - main
+  push:
+    branches:
+      - main
   schedule:
     - cron: 1 5 1 * *  # runs once at the beginning of each month (at 2:00 AM in Cairo Time Zone)
 
