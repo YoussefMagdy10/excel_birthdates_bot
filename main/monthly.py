@@ -18,8 +18,8 @@ def send_email(subject, body, sender, password, recipients): # to be exported
 
 def send_mails(subject, body, sender, password, recipients, care_rows): # to be exported
   if not care_rows.empty:  # send emails to 5odam!
-      # print("People with birthdays today:")
-      # print(care_rows['name'].tolist())
+    #   print("People with birthdays today:")
+    #   print(care_rows['name'].tolist())
       print(f"body: {body}")
       send_email(subject, body, sender, password, recipients)
       print(f"email sent successfully to {recipients[1]}")
@@ -43,19 +43,19 @@ def select_rows(data):
     return selected_rows, today
 
 def construct_mail(care_rows, today):
-    # subject = f'أعياد ميلاد شهر {today.month}'
-    subject = f'Welcome Message!'
-    body = "Welcome George :)\nThis month was the birthday of:\n"
-    # body = "This month is the birthday of:\n"
+    subject = f'أعياد ميلاد شهر {today.month}'
+    # subject = f'Welcome Message!'
+    # body = "Welcome George :)\nThis month was the birthday of:\n"
+    body = "This month is the birthday of:\n"
     for name in care_rows['name']:
         row = care_rows.loc[care_rows['name'] == name].squeeze() # attributes: name, birthdate, boy_number, mom_number, dad_number
         date = row.birthdate.strftime('%Y-%m-%d')
         body += f"{str(date)} --> {name}\n"
-    body += "Later, you will receive: \n"
-    body += "- A list of the birthdays on the 1st day of the each month at 10:00AM.\n"
-    body += "- A list of next week's birthdays on Sundays at 10:00AM (containing the next 8 days inclusive: from Sunday to Sunday).\n"
-    body += "- The birthday of the day at 7:00AM (If there is any).\n"
-    body += "Enjoy your day :)"
+    # body += "Later, you will receive: \n"
+    # body += "- A list of the birthdays on the 1st day of the each month at 10:00AM.\n"
+    # body += "- A list of next week's birthdays on Sundays at 10:00AM (containing the next 8 days inclusive: from Sunday to Sunday).\n"
+    # body += "- The birthday of the day at 7:00AM (If there is any).\n"
+    # body += "Enjoy your day :)"
     return subject, body
 
 
