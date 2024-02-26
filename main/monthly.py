@@ -2,7 +2,7 @@ import pandas as pd
 import smtplib
 from email.mime.text import MIMEText
 from datetime import timedelta, datetime
-from ..config import sender_email, sender_password, recipient_emails
+from config import sender_email, sender_password, recipient_emails
 import os
 
 
