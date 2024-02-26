@@ -1,11 +1,11 @@
 name: Birthday Monthly Reminder (Osra)
 
 on:
-  # push:
-  #   branches:
-  #     - main
+  push:
+    branches:
+      - main
   schedule:
-    - cron: 1 5 1 * *  # runs once at the beginning of each month (at 2:00 AM in Cairo Time Zone)
+    - cron: 0 8 1 * *  # runs once at the beginning of each month (at 10:00 AM in Cairo Time Zone)
 
 jobs:
   send_birthday_email:
@@ -29,4 +29,4 @@ jobs:
         pip install -r requirements.txt  # Add any additional dependencies here
 
     - name: Run Script
-      run: python monthly.py
+      run: python main/monthly.py
