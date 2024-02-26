@@ -14,7 +14,7 @@ sender_password = get_password("SENDER_PASS")
 
 recipient_emails = [sender_email,
                     # 'georgemrafla@gmail.com',
-                    # 'youssefmagdi1210@gmail.com',
+                    'youssefmagdi1210@gmail.com',
                     # 'michaelashraf1234@gmail.com',
                     # 'pierregorgy@gmail.com',
                     # 'Anthony.IMEOR@gmail.com',
