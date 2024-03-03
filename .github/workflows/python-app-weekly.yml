@@ -1,9 +1,9 @@
 name: Birthday Weekly Reminder (Osra)
 
 on:
-  # push:
-  #   branches:
-  #     - main
+  push:
+    branches:
+      - main
   schedule:
     - cron: 0 8 * * 0  # runs once every Sunday (at 10:00 AM in Egypt Time Zone)
 
