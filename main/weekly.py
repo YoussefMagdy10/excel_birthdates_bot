@@ -3,8 +3,9 @@ import smtplib
 from email.mime.text import MIMEText
 from datetime import timedelta, datetime
 from config import sender_email, sender_password, recipient_emails
+import calendar
+from datetime import datetime
 import os
-
 
 def send_email(subject, body, sender, password, recipients): # to be exported
     msg = MIMEText(body)
@@ -33,53 +34,84 @@ def data_handler(data):
     data['birthdate'] = pd.to_datetime(data['birthdate'], format='%d/%m/%Y')
     return data
 
-# def select_rows_last(data): # --> Needs logic revision
-#     today = datetime.now().date()
-#     seven_days_ago = today - timedelta(days=7)  # Calculate date 7 days ago
-#     seven_days_ago = pd.Timestamp(seven_days_ago)
+def select_rows_last(data):
+    today = datetime.now().date()
+    seven_days_earlier = today -timedelta(days=7)
+    seven_days_earlier = pd.Timestamp(seven_days_earlier)
+    today = pd.Timestamp(today)
 
-#     today = pd.to_datetime(today)
-#     # Filter rows for birthdays within the last 7 days (inclusive)
-#     selected_rows = data[
-#         ((data['birthdate'].dt.month == seven_days_ago.month) & (data['birthdate'].dt.day >= seven_days_ago.day) & (data['birthdate'].dt.day <= today.day)) |
-#         ((today.month - data['birthdate'].dt.month == 1) & (data['birthdate'].dt.day > today.day + 21))
-#     ]
-#     return selected_rows, today
+    selected_rows_1 = data[
+        (data['birthdate'].dt.month == today.month) &  # Check month
+        (data['birthdate'].dt.day < today.day)
+    ]  # Check day < today
+    # Apply additional filtering only if the previous condition is met (day < today)
+    selected_rows_1 = selected_rows_1[
+        selected_rows_1['birthdate'].dt.day >= seven_days_earlier.day
+    ] if today.day > seven_days_earlier.day else selected_rows_1
+
+    selected_rows_2 = data[
+        (data['birthdate'].dt.month == today.month-1)
+        & (data['birthdate'].dt.day <= calendar.monthrange(today.year,today.month-1)[1])
+        & (data['birthdate'].dt.day > seven_days_earlier.day) if seven_days_earlier.month == today.month-1 else None
+    ]
+    selected_rows = pd.concat([selected_rows_1, selected_rows_2])
+    selected_rows.sort_values(by='birthdate', ascending=True)
+    return selected_rows, today
+
 
 def select_rows_next(data):
     today = datetime.now().date()
     seven_days_later = today + timedelta(days=7)  # Calculate date 7 days later
     seven_days_later = pd.Timestamp(seven_days_later)
+    today = pd.Timestamp(today)
+    # print(today)
 
-    today = pd.to_datetime(today)
     # Filter rows for birthdays within the next 7 days (inclusive)
-    selected_rows = data[
-        ((data['birthdate'].dt.month == today.month) & (data['birthdate'].dt.day <= seven_days_later.day) & data['birthdate'].dt.day > today.day) | 
-        ((data['birthdate'].dt.month - today.month == 1) & (data['birthdate'].dt.day <= seven_days_later.day))
+    selected_rows_1 = data[
+        (data['birthdate'].dt.month == today.month)  # Check month
+        & (data['birthdate'].dt.day <= seven_days_later.day)  # Check day <= 7 days later
+        & (data['birthdate'].dt.day >= today.day)  # Check day >= today's day
     ]
+    selected_rows_2 = data[
+        (data['birthdate'].dt.month - today.month == 1) 
+        & (data['birthdate'].dt.day < today.day - 21)
+    ]
+    selected_rows_2 = selected_rows_2[
+        (data['birthdate'].dt.day <= seven_days_later.day)
+    ] if seven_days_later.month == today.month+1 else (selected_rows_2['birthdate'].dt.month==13)
+
+    selected_rows = pd.concat([selected_rows_1, selected_rows_2])
+    selected_rows.sort_values(by='birthdate', ascending=True)
     return selected_rows, today
 
 def construct_mail_last(care_rows, today):
     subject = f'أعياد ميلاد الأسبوع الماضي - ما بين: {(today - timedelta(days=7)).strftime("%Y-%m-%d")} & {today.strftime("%Y-%m-%d")}'
-    
     body = "Last week was the birthday of:\n"
     for name in care_rows['name']:
         row = care_rows.loc[care_rows['name'] == name].squeeze() # attributes: name, birthdate, boy_number, mom_number, dad_number
-        date = row.birthdate.strftime('%Y-%m-%d')
-        body += f"{str(date)} --> {name}\n"
+        date_part = pd.Timestamp(row['birthdate']).date()
+        birth_part = date_part.replace(year=today.year) # replacing birth year by this year, to get correct day of birth
+        day_of_week = birth_part.weekday()
+        day_name = calendar.day_name[day_of_week]
+        date = row.birthdate.strftime('%d-%m-%Y')
+        body += f"{day_name} {str(date)} --> {name}\n"
 
     return subject, body
 
 def construct_mail_next(care_rows, today):
-    subject = f'أعياد ميلاد الأسبوع القادم - ما بين: {today.strftime("%Y-%m-%d")} & {(today + timedelta(days=7)).strftime("%Y-%m-%d")}'
-
+    subject = f'أعياد ميلاد الأسبوع القادم - ما بين: {today.strftime("%d-%m-%Y")} & {(today + timedelta(days=7)).strftime("%d-%m-%Y")}'
     body = "This week is the birthday of:\n"
     for name in care_rows['name']:
         row = care_rows.loc[care_rows['name'] == name].squeeze() # attributes: name, birthdate, boy_number, mom_number, dad_number
-        date = row.birthdate.strftime('%Y-%m-%d')
-        body += f"{str(date)} --> {name}\n"
+        date_part = pd.Timestamp(row['birthdate']).date()
+        birth_part = date_part.replace(year=today.year) # replacing birth year by this year, to get correct day of birth
+        day_of_week = birth_part.weekday()
+        day_name = calendar.day_name[day_of_week]
+        date = row.birthdate.strftime('%d-%m-%Y')
+        body += f"{day_name} {str(date)} --> {name}\n"
 
     return subject, body
+
 
 
 # CONSTANTS:
@@ -91,13 +123,18 @@ recipients = recipient_emails
 # Storing Excel into df
 data = pd.read_csv(f'https://docs.google.com/spreadsheets/d/{sheet_id}/export?format=csv')
 data = data_handler(data)
-# last_week_rows, _ = select_rows_last(data)
+last_week_rows, _ = select_rows_last(data)
 next_week_rows, today = select_rows_next(data)
 
-# subject_last, body_last = construct_mail_last(last_week_rows, today)
+subject_last, body_last = construct_mail_last(last_week_rows, today)
 subject_next, body_next = construct_mail_next(next_week_rows, today)
 
+final_body = body_last + "\n" + body_next
+
+subject = "Week Birthdays!"
+send_mails(subject, final_body, sender, password, recipients, last_week_rows)
+
 # send_mails(subject_last, body_last, sender, password, recipients, last_week_rows)
-send_mails(subject_next, body_next, sender, password, recipients, next_week_rows)
+# send_mails(subject_next, body_next, sender, password, recipients, next_week_rows)
 
 
