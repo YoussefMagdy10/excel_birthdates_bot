@@ -133,6 +133,8 @@ data = pd.read_csv(f'https://docs.google.com/spreadsheets/d/{sheet_id}/export?fo
 data = data_handler(data)
 last_week_rows, _ = select_rows_last(data)
 next_week_rows, today = select_rows_next(data)
+care_rows = pd.concat([last_week_rows, next_week_rows])
+
 
 body_last = construct_mail_last(last_week_rows, today)
 body_next = construct_mail_next(next_week_rows, today)
@@ -140,7 +142,7 @@ body_next = construct_mail_next(next_week_rows, today)
 final_body = body_last + "\n" + body_next
 
 subject = "Week Birthdays!"
-send_mails(subject, final_body, sender, password, recipients, last_week_rows)
+send_mails(subject, final_body, sender, password, recipients, care_rows)
 
 # send_mails(subject_last, body_last, sender, password, recipients, last_week_rows)
 # send_mails(subject_next, body_next, sender, password, recipients, next_week_rows)
