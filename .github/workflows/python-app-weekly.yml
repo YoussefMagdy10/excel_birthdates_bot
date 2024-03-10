@@ -5,7 +5,7 @@ on:
   #   branches:
   #     - main
   schedule:
-    - cron: 0 8 * * 0  # runs once every Sunday (at 10:00 AM in Egypt Time Zone)
+    - cron: 45 11 * * 0  # runs once every Sunday (at 10:00 AM in Egypt Time Zone)
 
 jobs:
   send_birthday_email:

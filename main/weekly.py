@@ -45,15 +45,19 @@ def select_rows_last(data):
         (data['birthdate'].dt.day < today.day)
     ]  # Check day < today
     # Apply additional filtering only if the previous condition is met (day < today)
-    selected_rows_1 = selected_rows_1[
-        selected_rows_1['birthdate'].dt.day >= seven_days_earlier.day
-    ] if today.day > seven_days_earlier.day else selected_rows_1
+    if today.day > seven_days_earlier.day:
+        selected_rows_1 = selected_rows_1[
+            selected_rows_1['birthdate'].dt.day > seven_days_earlier.day
+        ]
 
-    selected_rows_2 = data[
-        (data['birthdate'].dt.month == today.month-1)
-        & (data['birthdate'].dt.day <= calendar.monthrange(today.year,today.month-1)[1])
-        & (data['birthdate'].dt.day > seven_days_earlier.day) if seven_days_earlier.month == today.month-1 else None
-    ]
+    selected_rows_2 = None
+    if seven_days_earlier.month == today.month-1:
+        selected_rows_2 = data[
+            (data['birthdate'].dt.month == today.month-1)
+            & (data['birthdate'].dt.day <= calendar.monthrange(today.year,today.month-1)[1])
+            & (data['birthdate'].dt.day > seven_days_earlier.day)
+        ]
+
     selected_rows = pd.concat([selected_rows_1, selected_rows_2])
     selected_rows.sort_values(by='birthdate', ascending=True)
     return selected_rows, today
@@ -73,7 +77,7 @@ def select_rows_next(data):
         & (data['birthdate'].dt.day >= today.day)  # Check day >= today's day
     ]
     selected_rows_2 = data[
-        (data['birthdate'].dt.month - today.month == 1) 
+        (data['birthdate'].dt.month - today.month == 1)
         & (data['birthdate'].dt.day < today.day - 21)
     ]
     selected_rows_2 = selected_rows_2[
@@ -85,8 +89,10 @@ def select_rows_next(data):
     return selected_rows, today
 
 def construct_mail_last(care_rows, today):
-    subject = f'أعياد ميلاد الأسبوع الماضي - ما بين: {(today - timedelta(days=7)).strftime("%Y-%m-%d")} & {today.strftime("%Y-%m-%d")}'
+    # subject = f'أعياد ميلاد الأسبوع الماضي - ما بين: {(today - timedelta(days=7)).strftime("%Y-%m-%d")} & {today.strftime("%Y-%m-%d")}'
     body = "Last week was the birthday of:\n"
+    if(len(care_rows['name'])==0):
+        body += "-- Nobody --\n"
     for name in care_rows['name']:
         row = care_rows.loc[care_rows['name'] == name].squeeze() # attributes: name, birthdate, boy_number, mom_number, dad_number
         date_part = pd.Timestamp(row['birthdate']).date()
@@ -96,11 +102,13 @@ def construct_mail_last(care_rows, today):
         date = row.birthdate.strftime('%d-%m-%Y')
         body += f"{day_name} {str(date)} --> {name}\n"
 
-    return subject, body
+    return body
 
 def construct_mail_next(care_rows, today):
-    subject = f'أعياد ميلاد الأسبوع القادم - ما بين: {today.strftime("%d-%m-%Y")} & {(today + timedelta(days=7)).strftime("%d-%m-%Y")}'
+    # subject = f'أعياد ميلاد الأسبوع القادم - ما بين: {today.strftime("%d-%m-%Y")} & {(today + timedelta(days=7)).strftime("%d-%m-%Y")}'
     body = "This week is the birthday of:\n"
+    if(len(care_rows['name'])==0):
+        body += "-- Nobody --\n"
     for name in care_rows['name']:
         row = care_rows.loc[care_rows['name'] == name].squeeze() # attributes: name, birthdate, boy_number, mom_number, dad_number
         date_part = pd.Timestamp(row['birthdate']).date()
@@ -110,7 +118,7 @@ def construct_mail_next(care_rows, today):
         date = row.birthdate.strftime('%d-%m-%Y')
         body += f"{day_name} {str(date)} --> {name}\n"
 
-    return subject, body
+    return body
 
 
 
@@ -126,8 +134,8 @@ data = data_handler(data)
 last_week_rows, _ = select_rows_last(data)
 next_week_rows, today = select_rows_next(data)
 
-subject_last, body_last = construct_mail_last(last_week_rows, today)
-subject_next, body_next = construct_mail_next(next_week_rows, today)
+body_last = construct_mail_last(last_week_rows, today)
+body_next = construct_mail_next(next_week_rows, today)
 
 final_body = body_last + "\n" + body_next
 
