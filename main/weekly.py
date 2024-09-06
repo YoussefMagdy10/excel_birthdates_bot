@@ -51,7 +51,7 @@ def select_rows_last(data):
             selected_rows_1['birthdate'].dt.day > seven_days_earlier.day
         ]
 
-    selected_rows_2 = None
+    selected_rows_2 = pd.DataFrame(columns=data.columns)
     if seven_days_earlier.month == today.month-1:
         selected_rows_2 = data[
             (data['birthdate'].dt.month == today.month-1)
@@ -63,7 +63,6 @@ def select_rows_last(data):
     selected_rows['month'] = selected_rows['birthdate'].dt.month
     selected_rows['day'] = selected_rows['birthdate'].dt.day
 
-    selected_rows = pd.concat([selected_rows_1, selected_rows_2])
     selected_rows = selected_rows.sort_values(by=['month', 'day'], ascending=[True, True])
     return selected_rows, today
 
