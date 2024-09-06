@@ -53,7 +53,8 @@ def send_mails(subject, body, sender, password, recipients, care_rows): # to be 
       print("People with birthdays today:")
       print(care_rows['name'].tolist())
       print(f"body: {body}")
-      send_email(subject, body, sender, password, recipients)
+      # send_email(subject, body, sender, password, recipients)
+      send_email("Daily Mail - BUG FIXED!", "The bot will return working fine again starting from tomorrow. Sorry for these dropped 3 months :(", sender, password, recipients)
       print(f"email sent successfully to {recipients[1]}")
   else:
       print("No birthdays today.")
