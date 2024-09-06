@@ -43,7 +43,14 @@ def select_rows(data):
     selected_rows = data[
         (data['birthdate'].dt.month == today.month)
     ]
-    selected_rows.sort_values(by='birthdate', ascending=True, inplace=True)
+    # selected_rows.sort_values(by='birthdate', ascending=True, inplace=True)
+
+    # Extract month and day
+    selected_rows['month'] = selected_rows['birthdate'].dt.month
+    selected_rows['day'] = selected_rows['birthdate'].dt.day
+
+    selected_rows = selected_rows.sort_values(by=['month', 'day'], ascending=[True, True])
+
     return selected_rows, today
 
 def construct_mail(care_rows, today):

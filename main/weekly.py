@@ -59,8 +59,12 @@ def select_rows_last(data):
             & (data['birthdate'].dt.day > seven_days_earlier.day)
         ]
 
+    # Extract month and day
+    selected_rows['month'] = selected_rows['birthdate'].dt.month
+    selected_rows['day'] = selected_rows['birthdate'].dt.day
+
     selected_rows = pd.concat([selected_rows_1, selected_rows_2])
-    selected_rows.sort_values(by='birthdate', ascending=True)
+    selected_rows = selected_rows.sort_values(by=['month', 'day'], ascending=[True, True])
     return selected_rows, today
 
 
@@ -86,7 +90,17 @@ def select_rows_next(data):
     ] if seven_days_later.month == today.month+1 else (selected_rows_2['birthdate'].dt.month==13)
 
     selected_rows = pd.concat([selected_rows_1, selected_rows_2])
-    selected_rows.sort_values(by='birthdate', ascending=True)
+    selected_rows['birthdate'] = pd.to_datetime(selected_rows['birthdate'])
+
+    # Extract month and day
+    selected_rows['month'] = selected_rows['birthdate'].dt.month
+    selected_rows['day'] = selected_rows['birthdate'].dt.day
+
+    # Sort by month and day
+    selected_rows = selected_rows.sort_values(by=['month', 'day'], ascending=[True, True])
+
+    # Drop the temporary columns if you don't need them anymore
+    selected_rows = selected_rows.drop(columns=['month', 'day'])
     return selected_rows, today
 
 def construct_mail_last(care_rows, today):
