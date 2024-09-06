@@ -7,6 +7,7 @@ import calendar
 from datetime import datetime
 import os
 
+
 def send_email(subject, body, sender, password, recipients): # to be exported
     msg = MIMEText(body)
     msg['Subject'] = subject
@@ -17,27 +18,29 @@ def send_email(subject, body, sender, password, recipients): # to be exported
         smtp_server.login(sender, password)
         smtp_server.sendmail(sender, recipients, msg.as_string())
 
+
 def send_mails(subject, body, sender, password, recipients, care_rows): # to be exported
   if not care_rows.empty:  # send emails to 5odam!
       # print("People with birthdays today:")
       # print(care_rows['name'].tolist())
       print(f"body: {body}")
       send_email(subject, body, sender, password, recipients)
-    #   send_email("Weekly Mail - BUG FIXED!", "The bot will return working fine again starting from tomorrow. Sorry for these dropped 3 months :(", sender, password, recipients)
       print(f"email sent successfully to {recipients[1]}")
   else:
       print("No birthdays today.")
 
+
 def data_handler(data):
-    data = data.rename(columns={'الإسم': 'name', 'تاريخ الميلاد': 'birthdate', 'رقم الولد': 'boy_number', 
+    data = data.rename(columns={'الإسم': 'name', 'تاريخ الميلاد': 'birthdate', 'رقم الولد': 'boy_number',
                                 'رقم الأم': 'mom_number', 'رقم الأب': 'dad_number'})
     data = data[['name', 'birthdate', 'boy_number', 'mom_number', 'dad_number']]
     data['birthdate'] = pd.to_datetime(data['birthdate'], format='%d/%m/%Y')
     return data
 
+
 def select_rows_last(data):
     today = datetime.now().date()
-    seven_days_earlier = today -timedelta(days=7)
+    seven_days_earlier = today - timedelta(days=7)
     seven_days_earlier = pd.Timestamp(seven_days_earlier)
     today = pd.Timestamp(today)
 
@@ -52,12 +55,19 @@ def select_rows_last(data):
         ]
 
     selected_rows_2 = pd.DataFrame(columns=data.columns)
-    if seven_days_earlier.month == today.month-1:
+    
+    if seven_days_earlier.month == today.month - 1:
         selected_rows_2 = data[
-            (data['birthdate'].dt.month == today.month-1)
-            & (data['birthdate'].dt.day <= calendar.monthrange(today.year,today.month-1)[1])
-            & (data['birthdate'].dt.day > seven_days_earlier.day)
+            (data['birthdate'].dt.month == today.month - 1) & 
+            (data['birthdate'].dt.day <= calendar.monthrange(today.year, today.month - 1)[1]) & 
+            (data['birthdate'].dt.day > seven_days_earlier.day)
         ]
+
+    # Concatenate selected rows
+    selected_rows = pd.concat([selected_rows_1, selected_rows_2])
+
+    # Ensure 'birthdate' is in datetime format
+    selected_rows['birthdate'] = pd.to_datetime(selected_rows['birthdate'])
 
     # Extract month and day
     selected_rows['month'] = selected_rows['birthdate'].dt.month
@@ -102,6 +112,7 @@ def select_rows_next(data):
     selected_rows = selected_rows.drop(columns=['month', 'day'])
     return selected_rows, today
 
+
 def construct_mail_last(care_rows, today):
     # subject = f'أعياد ميلاد الأسبوع الماضي - ما بين: {(today - timedelta(days=7)).strftime("%Y-%m-%d")} & {today.strftime("%Y-%m-%d")}'
     body = "Last week was the birthday of:\n"
@@ -120,9 +131,10 @@ def construct_mail_last(care_rows, today):
 
 def construct_mail_next(care_rows, today):
     # subject = f'أعياد ميلاد الأسبوع القادم - ما بين: {today.strftime("%d-%m-%Y")} & {(today + timedelta(days=7)).strftime("%d-%m-%Y")}'
+
     body = "This week is the birthday of:\n"
     if(len(care_rows['name'])==0):
-        body += "-- Nobody --\n"
+        body += "-- No one --\n"
     for name in care_rows['name']:
         row = care_rows.loc[care_rows['name'] == name].squeeze() # attributes: name, birthdate, boy_number, mom_number, dad_number
         date_part = pd.Timestamp(row['birthdate']).date()

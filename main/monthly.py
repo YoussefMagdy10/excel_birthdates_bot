@@ -20,17 +20,17 @@ def send_email(subject, body, sender, password, recipients): # to be exported
 
 def send_mails(subject, body, sender, password, recipients, care_rows): # to be exported
   if not care_rows.empty:  # send emails to 5odam!
-    #   print("People with birthdays today:")
-    #   print(care_rows['name'].tolist())
-      print(f"body: {body}")
+      # print("People with birthdays today:")
+      # print(care_rows['name'].tolist())
+      # print(f"body: {body}")
       send_email(subject, body, sender, password, recipients)
-    #   send_email("Monthly Mail - BUG FIXED!", "The bot will return working fine again starting from tomorrow. Sorry for these dropped 3 months :(", sender, password, recipients)
-      print(f"email sent successfully to {recipients[1]}")
+      # print(f"email sent successfully to {recipients[1]}")
   else:
       print("No birthdays today.")
 
+
 def data_handler(data):
-    data = data.rename(columns={'الإسم': 'name', 'تاريخ الميلاد': 'birthdate', 'رقم الولد': 'boy_number', 
+    data = data.rename(columns={'الإسم': 'name', 'تاريخ الميلاد': 'birthdate', 'رقم الولد': 'boy_number',
                                 'رقم الأم': 'mom_number', 'رقم الأب': 'dad_number'})
     data = data[['name', 'birthdate', 'boy_number', 'mom_number', 'dad_number']]
     data['birthdate'] = pd.to_datetime(data['birthdate'], format='%d/%m/%Y')
@@ -43,6 +43,7 @@ def select_rows(data):
     selected_rows = data[
         (data['birthdate'].dt.month == today.month)
     ]
+
     # Extract month and day
     selected_rows['month'] = selected_rows['birthdate'].dt.month
     selected_rows['day'] = selected_rows['birthdate'].dt.day
@@ -52,7 +53,7 @@ def select_rows(data):
 
 
 def construct_mail(care_rows, today):
-    subject = f'Month {today.month} Birthdays!'
+    subject = f'أعياد ميلاد شهر {today.month}'
 
     body = "This month is the birthday of:\n"
     for name in care_rows['name']:
