@@ -55,7 +55,10 @@ def select_rows(data):
 def construct_mail(care_rows, today):
     subject = f'أعياد ميلاد شهر {today.month}'
 
-    body = "This month is the birthday of:\n"
+    body = f"Welcome O Andrew to our births bot 😄. Here is how it works:
+    \nEvery month's birthdays are emailed on the first day of each month @ 10AM. \nEvery Friday, the birthdays of the upcoming week are emailed @ 10AM. If there are any birthdays on the day, they are emailed @ 7AM.
+    \nEnjoy your stay 😍\n\nBelow, you can find a sample of our Monthly email. Unfortunately, this month has only 1 birthday!\n\n"
+    body += "This month is the birthday of:\n"
     for name in care_rows['name']:
         row = care_rows.loc[care_rows['name'] == name].squeeze() # attributes: name, birthdate, boy_number, mom_number, dad_number
         date_part = pd.Timestamp(row['birthdate']).date()
