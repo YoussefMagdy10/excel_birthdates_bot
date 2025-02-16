@@ -55,8 +55,8 @@ def select_rows(data):
 def construct_mail(care_rows, today):
     subject = f'أعياد ميلاد شهر {today.month}'
 
-    body = "Welcome O Andrew to our births bot 😄. Here is how it works:\nEvery month's birthdays are emailed on the first day of each month @ 10AM. \nEvery Friday, the birthdays of the upcoming week (& those of the previous one in case you missed any) are emailed @ 10AM. Finally, whenever there is a birthday on a day, it's emailed @ 7AM.\nEnjoy your stay 😍\n\nBelow, you can find a sample of our Monthly email. Unfortunately, this month has only 1 birthday!\n     ↓↓↓↓↓\n\nThis month is the birthday of:\n"
-    # body = "This month is the birthday of:\n"
+    # body = "Welcome O Andrew to our births bot 😄. Here is how it works:\nEvery month's birthdays are emailed on the first day of each month @ 10AM. \nEvery Friday, the birthdays of the upcoming week (& those of the previous one in case you missed any) are emailed @ 10AM. Finally, whenever there is a birthday on a day, it's emailed @ 7AM.\nEnjoy your stay 😍\n\nBelow, you can find a sample of our Monthly email. Unfortunately, this month has only 1 birthday!\n     ↓↓↓↓↓\n\nThis month is the birthday of:\n"
+    body = "This month is the birthday of:\n"
     for name in care_rows['name']:
         row = care_rows.loc[care_rows['name'] == name].squeeze() # attributes: name, birthdate, boy_number, mom_number, dad_number
         date_part = pd.Timestamp(row['birthdate']).date()
@@ -66,7 +66,7 @@ def construct_mail(care_rows, today):
         date = row.birthdate.strftime('%d-%m-%Y')
         body += f"{day_name} {str(date)} --> {name}\n"
 
-    body += "🔴🔴🔴If this works for you, please DM me on WhatsApp confirming that you received this email.🔴🔴🔴"
+    # body += "🔴🔴🔴If this works for you, please DM me on WhatsApp confirming that you received this email.🔴🔴🔴"
     # body += "Later, you will receive: \n"
     # body += "- A list of the birthdays on the 1st day of the each month at 10:00AM.\n"
     # body += "- A list of next week's birthdays on Sundays at 10:00AM (containing the next 8 days inclusive: from Sunday to Sunday).\n"
