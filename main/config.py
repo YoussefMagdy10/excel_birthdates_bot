@@ -20,5 +20,5 @@ recipient_emails = [sender_email,
                     # 'Anthony.IMEOR@gmail.com',
                     # 'Andrewwadie2000@gmail.com',
                     # 'georgetarek29@gmail.com',
-                    'andro.nabil96@gmail.com'
+                    # 'andro.nabil96@gmail.com'
                     ]
