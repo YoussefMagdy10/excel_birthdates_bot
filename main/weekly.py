@@ -111,7 +111,7 @@ body = construct_final_mail(last_week_rows, next_week_rows, datetime.now().date(
 print(body) # Try it from cmd (VsCode doesn't support Arabic characters)
 
 subject = "Week Birthdays!"
-# send_mails(subject, body, sender, password, recipients, care_rows)
+send_mails(subject, body, sender, password, recipients, care_rows)
 
 # # send_mails(subject_last, body_last, sender, password, recipients, last_week_rows)
 # # send_mails(subject_next, body_next, sender, password, recipients, next_week_rows)
