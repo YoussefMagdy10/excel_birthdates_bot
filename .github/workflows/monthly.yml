@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         institution_config:
-          - institutions/smouha_osretna.json
+          # - institutions/smouha_osretna.json
           - institutions/sporting_osretna.json
 
     steps:
@@ -30,7 +30,7 @@ jobs:
 
       - name: Run monthly reminder
         env:
-          SMOUHA_OSRETNA_SENDER_PASS: ${{ secrets.SMOUHA_OSRETNA_SENDER_PASS }}
+          # SMOUHA_OSRETNA_SENDER_PASS: ${{ secrets.SMOUHA_OSRETNA_SENDER_PASS }}
           SPORTING_OSRETNA_SENDER_PASS: ${{ secrets.SPORTING_OSRETNA_SENDER_PASS }}
         run: |
-          python scripts/run.py monthly ${{ matrix.institution_config }}
+          python -m scripts.run monthly institutions/sporting_osretna.json
