@@ -1,0 +1,45 @@
+name: Birthday Daily Reminder
+
+on:
+  # push:
+  #   branches:
+  #     - main
+  schedule:
+    - cron: 0 5 * * *  # 7:00 AM Egypt time approximately, depending on DST/UTC offset
+  workflow_dispatch:
+
+jobs:
+  send_daily:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        institution_config:
+          - institutions/smouha_osretna.json
+          - institutions/sporting_osretna.json
+
+    # env:
+    #   SENDER_PASS: ${{ secrets.SENDER_PASS }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.11
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Script
+        run: python main/daily.py
+
+      - name: Run daily reminder
+        env:
+          SMOUHA_OSRETNA_SENDER_PASS: ${{ secrets.SMOUHA_OSRETNA_SENDER_PASS }}
+          SPORTING_OSRETNA_SENDER_PASS: ${{ secrets.SPORTING_OSRETNA_SENDER_PASS }}
+        run: |
+          python scripts/run.py daily ${{ matrix.institution_config }}
