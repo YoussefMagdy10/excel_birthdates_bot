@@ -78,12 +78,13 @@ def load_students_dataframe(csv_url: str) -> pd.DataFrame:
     df = _normalize_columns(df)
 
     df["birthdate"] = pd.to_datetime(df["birthdate"], format="%d/%m/%Y", errors="coerce")
-    if df["birthdate"].isna().any():
-        bad_rows = df[df["birthdate"].isna()]
-        raise ValueError(
-            f"Some birthdate values could not be parsed with format DD/MM/YYYY.\n"
-            f"Bad rows:\n{bad_rows.to_string(index=False)}"
-        )
+
+    bad_rows = df[df["birthdate"].isna()].copy()
+    if not bad_rows.empty:
+        print("Skipping rows with missing or invalid birthdate:")
+        print(bad_rows[["name"]].to_string(index=False))
+
+    df = df.dropna(subset=["birthdate"]).copy()
 
     for col in ["boy_number", "mom_number", "dad_number"]:
         df[col] = df[col].fillna("").astype(str).str.strip()
