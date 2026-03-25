@@ -1,0 +1,10 @@
+{
+  "name": "Institution Name",
+  "sender_email": "institution@gmail.com",
+  "sender_password_env": "INSTITUTION_SENDER_PASS",
+  "subscribers": [
+    "teacher1@example.com",
+    "teacher2@example.com"
+  ],
+  "csv_url": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/export?format=csv"
+}

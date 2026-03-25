@@ -1,0 +1,36 @@
+name: Birthday Monthly Reminder
+
+on:
+  schedule:
+    - cron: "0 8 1 * *" # 10:00 AM Egypt time approximately, depending on DST/UTC offset
+  workflow_dispatch:
+
+jobs:
+  send_monthly:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        institution_config:
+          - institutions/institution_a.json
+          - institutions/institution_b.json
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run monthly reminder
+        env:
+          SMOUHA_OSRETNA_SENDER_PASS: ${{ secrets.SMOUHA_OSRETNA_SENDER_PASS }}
+          SPORTING_OSRETNA_SENDER_PASS: ${{ secrets.SPORTING_OSRETNA_SENDER_PASS }}
+        run: |
+          python scripts/run.py monthly ${{ matrix.institution_config }}
