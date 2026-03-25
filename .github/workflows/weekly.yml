@@ -14,8 +14,8 @@ jobs:
     strategy:
       matrix:
         institution_config:
-          - institutions/institution_a.json
-          - institutions/institution_b.json
+          - institutions/smouha_osretna.json
+          - institutions/sporting_osretna.json
 
     steps:
       - name: Checkout Repository
