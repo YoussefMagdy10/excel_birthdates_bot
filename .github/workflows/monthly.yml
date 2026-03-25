@@ -1,6 +1,9 @@
 name: Birthday Monthly Reminder
 
 on:
+  push:
+    branches:
+      - main
   schedule:
     - cron: "0 8 1 * *" # 10:00 AM Egypt time approximately, depending on DST/UTC offset
   workflow_dispatch:
